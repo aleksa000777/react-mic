@@ -32,9 +32,7 @@ export class MicrophoneRecorder {
 
   startRecording=() => {
     startTime = Date.now();
-
     if(mediaRecorder) {
-
       if(audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
@@ -51,9 +49,14 @@ export class MicrophoneRecorder {
         if(onStartCallback) { onStartCallback() };
       }
     } else {
-      if (navigator.mediaDevices) {
-        console.log('getUserMedia supported.');
+      analyser = null;
+      audioCtx = null;
+      chunks = [];
+      stream = null;
+      blobObject = null;
+      mediaRecorder = null;
 
+      if (navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia(constraints)
           .then((str) => {
             stream = str;
@@ -93,6 +96,7 @@ export class MicrophoneRecorder {
   stopRecording() {
     if(mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(i => i.stop())
       stream.getAudioTracks().forEach((track) => {
         track.stop()
       })
