@@ -1,4 +1,5 @@
 import AudioContext from './AudioContext';
+import MediaRecorder from 'audio-recorder-polyfill';
 
 let analyser;
 let audioCtx;
@@ -30,7 +31,6 @@ export class MicrophoneRecorder {
   }
 
   startRecording=() => {
-
     startTime = Date.now();
 
     if(mediaRecorder) {
@@ -45,7 +45,7 @@ export class MicrophoneRecorder {
       }
 
       if(audioCtx && mediaRecorder && mediaRecorder.state === 'inactive') {
-        mediaRecorder.start(10);
+        mediaRecorder.start();
         const source = audioCtx.createMediaStreamSource(stream);
         source.connect(analyser);
         if(onStartCallback) { onStartCallback() };
@@ -57,7 +57,6 @@ export class MicrophoneRecorder {
         navigator.mediaDevices.getUserMedia(constraints)
           .then((str) => {
             stream = str;
-
             if(MediaRecorder.isTypeSupported(mediaOptions.mimeType)) {
               mediaRecorder = new MediaRecorder(str, mediaOptions);
             } else {
@@ -66,19 +65,19 @@ export class MicrophoneRecorder {
 
             if(onStartCallback) { onStartCallback() };
 
-            mediaRecorder.onstop = this.onStop;
-            mediaRecorder.ondataavailable = (event) => {
-              chunks.push(event.data);
+            mediaRecorder.addEventListener('stop', this.onStop)
+            mediaRecorder.addEventListener('dataavailable', e => {
+              chunks.push(e.data);
               if(onDataCallback) {
-                onDataCallback(event.data);
+                onDataCallback(e.data);
               }
-            }
+            })
 
             audioCtx = AudioContext.getAudioContext();
             analyser = AudioContext.getAnalyser();
 
             audioCtx.resume();
-            mediaRecorder.start(10);
+            mediaRecorder.start();
 
             const source = audioCtx.createMediaStreamSource(stream);
             source.connect(analyser);
@@ -94,18 +93,16 @@ export class MicrophoneRecorder {
   stopRecording() {
     if(mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
-
       stream.getAudioTracks().forEach((track) => {
         track.stop()
       })
 
       mediaRecorder = null
-
       audioCtx.suspend();
     }
   }
 
-  onStop(evt) {
+  onStop() {
     const blob = new Blob(chunks, { 'type' : mediaOptions.mimeType });
     chunks = [];
 

@@ -39,14 +39,14 @@ export default class Demo extends Component {
     });
   }
 
-  onSave=(blobObject) => {
+  onSave = (blobObject) => {
   }
 
-  onStart=() => {
+  onStart = () => {
     console.log('You can tap into the onStart callback');
   }
 
-  onStop= (blobObject) => {
+  onStop = (blobObject) => {
     this.setState({
       blobURL : blobObject.blobURL
     });
