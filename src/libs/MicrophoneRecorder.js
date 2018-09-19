@@ -30,7 +30,7 @@ export class MicrophoneRecorder {
     mediaOptions= options;
   }
 
-  startRecording=() => {
+  startRecording =() => {
     startTime = Date.now();
     if(mediaRecorder) {
       if(audioCtx && audioCtx.state === 'suspended') {
@@ -94,6 +94,7 @@ export class MicrophoneRecorder {
   }
 
   stopRecording() {
+    console.log("should stop")
     if(mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks().forEach(i => i.stop())
@@ -103,11 +104,13 @@ export class MicrophoneRecorder {
 
       mediaRecorder = null
       audioCtx.suspend();
+      console.log("stopped")
     }
   }
 
   onStop() {
     const blob = new Blob(chunks, { 'type' : mediaOptions.mimeType });
+
     chunks = [];
 
     const blobObject =  {

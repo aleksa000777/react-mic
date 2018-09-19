@@ -50,6 +50,7 @@ export default class Demo extends Component {
     this.setState({
       blobURL : blobObject.blobURL
     });
+    console.log("blobObject.blobURL", blobObject.blobURL)
   }
 
   onData(recordedBlob){
