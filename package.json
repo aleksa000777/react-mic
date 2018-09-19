@@ -35,7 +35,7 @@
     "material-ui": "^0.19.2",
     "nwb": "^0.15.6",
     "nwb-sass": "^0.6.0",
-    "react": "^16.0.0",
+    "react": "^16.3.0",
     "react-dom": "^16.0.0"
   },
   "author": "Mark Muskardin",

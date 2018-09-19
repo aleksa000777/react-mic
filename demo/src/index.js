@@ -17,6 +17,7 @@ ReactGA.initialize('UA-98862819-1');
 export default class Demo extends Component {
   constructor(props){
     super(props);
+    this.audioRef = React.createRef();
     this.state = {
       blobObject: null,
       isRecording: false
@@ -44,6 +45,10 @@ export default class Demo extends Component {
 
   onStart = () => {
     console.log('You can tap into the onStart callback');
+  }
+
+  onStalled = () => {
+    this.audioRef.current.load();
   }
 
   onStop = (blobObject) => {
@@ -77,7 +82,7 @@ export default class Demo extends Component {
             onData={this.onData}
             strokeColor="#000000" />
           <div>
-            <audio ref="audioSource" controls="controls" src={this.state.blobURL}></audio>
+            <audio ref="audioSource" controls="controls" src={this.state.blobURL} ref={this.audioRef} onStalled={this.onStalled}></audio>
           </div>
           <br />
           <br />

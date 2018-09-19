@@ -131,7 +131,7 @@ ReactMic.defaultProps = {
   strokeColor       : '#000000',
   className         : 'visualizer',
   audioBitsPerSecond: 128000,
-  mimeType          : 'audio/wav',
+  mimeType          : 'audio/webm;codecs=opus',
   record            : false,
   width             : 640,
   height            : 100,
