@@ -64,7 +64,7 @@ export default class Demo extends Component {
 
   render() {
     const { isRecording } = this.state;
-
+    
     return(
       <MuiThemeProvider>
         <div>

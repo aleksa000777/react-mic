@@ -95,8 +95,7 @@ export class MicrophoneRecorder {
   }
 
   stopRecording() {
-    // if(mediaRecorder && mediaRecorder.state !== 'inactive') {
-    if(mediaRecorder) {
+    if(mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks().forEach(i => i.stop())
       stream.getAudioTracks().forEach((track) => {
