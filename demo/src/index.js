@@ -39,17 +39,18 @@ export default class Demo extends Component {
     });
   }
 
-  onSave=(blobObject) => {
+  onSave = (blobObject) => {
   }
 
-  onStart=() => {
+  onStart = () => {
     console.log('You can tap into the onStart callback');
   }
 
-  onStop= (blobObject) => {
+  onStop = (blobObject) => {
     this.setState({
       blobURL : blobObject.blobURL
     });
+    console.log("blobObject.blobURL", blobObject.blobURL)
   }
 
   onData(recordedBlob){
@@ -76,7 +77,10 @@ export default class Demo extends Component {
             onData={this.onData}
             strokeColor="#000000" />
           <div>
-            <audio ref="audioSource" controls="controls" src={this.state.blobURL}></audio>
+            <audio
+              src={this.state.blobURL}
+              controls>
+            </audio>
           </div>
           <br />
           <br />
