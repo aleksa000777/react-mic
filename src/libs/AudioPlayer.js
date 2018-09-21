@@ -3,7 +3,6 @@ import AudioContext from './AudioContext';
 let audioSource;
 
 const AudioPlayer =  {
-
   create(audioElem) {
     const audioCtx = AudioContext.getAudioContext();
     const analyser = AudioContext.getAnalyser();
@@ -16,7 +15,6 @@ const AudioPlayer =  {
 
     analyser.connect(audioCtx.destination);
   }
-
 }
 
 export default AudioPlayer;
