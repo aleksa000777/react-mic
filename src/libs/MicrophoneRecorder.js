@@ -14,7 +14,7 @@ let onStopCallback;
 let onSaveCallback;
 let onDataCallback;
 
-const constraints = { audio: true, video: false }; // constraints - only audio needed
+const constraints = { audio: true };
 
 navigator.getUserMedia = (navigator.getUserMedia ||
                           navigator.webkitGetUserMedia ||
@@ -32,91 +32,56 @@ export class MicrophoneRecorder {
 
   startRecording = () => {
     startTime = Date.now();
+    analyser = null;
+    audioCtx = null;
+    chunks = [];
+    stream = null;
+    blobObject = null;
+    mediaRecorder = null;
 
-    if(mediaRecorder) {
-      if(audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      if(mediaRecorder && mediaRecorder.state === 'paused') {
-        mediaRecorder.resume();
-        return;
-      }
-
-      if(audioCtx && mediaRecorder && mediaRecorder.state === 'inactive') {
-        mediaRecorder.start();
-        const source = audioCtx.createMediaStreamSource(stream);
-        source.connect(analyser);
-        if(onStartCallback) { onStartCallback() };
-      }
-    } else {
-      analyser = null;
-      audioCtx = null;
-      chunks = [];
-      stream = null;
-      blobObject = null;
-      mediaRecorder = null;
-
-      if (navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia(constraints)
-          .then((str) => {
-            stream = str;
-            if(MediaRecorder.isTypeSupported(mediaOptions.mimeType)) {
-              mediaRecorder = new MediaRecorder(str, mediaOptions);
-            } else {
-              mediaRecorder = new MediaRecorder(str);
+    if (navigator.mediaDevices) {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then((str) => {
+          stream = str;
+          mediaRecorder = new MediaRecorder(str);
+          if(onStartCallback) { onStartCallback() };
+          mediaRecorder.addEventListener('dataavailable', e => {
+            console.log(e.data.type)
+            chunks = e.data;
+            if(onDataCallback) {
+              onDataCallback(e.data);
             }
+          })
+          // audioCtx = AudioContext.getAudioContext();
+          // analyser = AudioContext.getAnalyser();
+          // audioCtx.resume();
+          // const source = audioCtx.createMediaStreamSource(stream);
+          // source.connect(analyser);
+          mediaRecorder.start();
+          mediaRecorder.addEventListener('stop', this.onStop)
+        });
 
-            if(onStartCallback) { onStartCallback() };
-            mediaRecorder.addEventListener('stop', this.onStop)
-            mediaRecorder.addEventListener('dataavailable', e => {
-              console.log(e.data.type)
-              chunks.push(e.data);
-              if(onDataCallback) {
-                onDataCallback(e.data);
-              }
-            })
-
-            audioCtx = AudioContext.getAudioContext();
-            analyser = AudioContext.getAnalyser();
-
-            audioCtx.resume();
-            mediaRecorder.start();
-
-            const source = audioCtx.createMediaStreamSource(stream);
-            source.connect(analyser);
-          });
-
-      } else {
-        alert('Your browser does not support audio recording');
-      }
+    } else {
+      alert('Your browser does not support audio recording');
     }
-
   }
 
-  stopRecording() {
-    if(mediaRecorder && mediaRecorder.state !== 'inactive') {
+  stopRecording () {
+    if (mediaRecorder) {
       mediaRecorder.stop();
+      mediaRecorder.stream.getTracks()[0].stop()
       mediaRecorder.stream.getTracks().forEach(i => i.stop())
-      stream.getAudioTracks().forEach((track) => {
-        track.stop()
-      })
-
-      mediaRecorder = null
-      audioCtx.suspend();
+      // audioCtx.suspend()
     }
   }
 
   onStop() {
-    const blob = new Blob(chunks, { 'type' : mediaOptions.mimeType });
-    chunks = [];
-
     const blobObject =  {
-      blob      : blob,
+      blob      : chunks,
       startTime : startTime,
-      stopTime  : Date.now(),
+      stopTime  : window.Date.now(),
       options   : mediaOptions,
-      blobURL   : window.URL.createObjectURL(blob)
+      blobURL   : window.URL.createObjectURL(chunks)
     }
 
     if(onStopCallback) { onStopCallback(blobObject) };
