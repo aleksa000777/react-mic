@@ -52,7 +52,11 @@ export class MicrophoneRecorder {
               onDataCallback(e.data);
             }
           })
-
+          // audioCtx = AudioContext.getAudioContext();
+          // analyser = AudioContext.getAnalyser();
+          // audioCtx.resume();
+          // const source = audioCtx.createMediaStreamSource(stream);
+          // source.connect(analyser);
           mediaRecorder.start();
           mediaRecorder.addEventListener('stop', this.onStop)
         });
@@ -67,6 +71,7 @@ export class MicrophoneRecorder {
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks()[0].stop()
       mediaRecorder.stream.getTracks().forEach(i => i.stop())
+      // audioCtx.suspend()
     }
   }
 
@@ -78,7 +83,7 @@ export class MicrophoneRecorder {
       options   : mediaOptions,
       blobURL   : window.URL.createObjectURL(chunks)
     }
-    
+
     if(onStopCallback) { onStopCallback(blobObject) };
     if(onSaveCallback) { onSaveCallback(blobObject) };
   }
