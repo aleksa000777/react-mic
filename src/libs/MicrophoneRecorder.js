@@ -52,9 +52,11 @@ export class MicrophoneRecorder {
               onDataCallback(e.data);
             }
           })
+
+          // TODO vizualization for Safari not working
           // audioCtx = AudioContext.getAudioContext();
-          // analyser = AudioContext.getAnalyser();
           // audioCtx.resume();
+          // analyser = AudioContext.getAnalyser();
           // const source = audioCtx.createMediaStreamSource(stream);
           // source.connect(analyser);
           mediaRecorder.start();
@@ -68,10 +70,10 @@ export class MicrophoneRecorder {
 
   stopRecording () {
     if (mediaRecorder) {
+      // audioCtx.suspend() TODO Safari
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks()[0].stop()
       mediaRecorder.stream.getTracks().forEach(i => i.stop())
-      // audioCtx.suspend()
     }
   }
 
