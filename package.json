@@ -38,8 +38,7 @@
     "react": "^16.3.0",
     "react-dom": "^16.0.0"
   },
-  "author": "Aleksa Matiyev, Mark Muskardin",
-  "homepage": "https://aleksa000777.github.io/react-mic",
+  "author": "Aleksa Matiyev",
   "license": "MIT",
   "repository": "https://github.com/aleksa000777/react-mic",
   "dependencies": {

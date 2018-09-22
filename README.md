@@ -1,11 +1,7 @@
 # react-mic
 [Original](https://github.com/hackingbeauty/react-mic)
 
-Works via the HTML5 MediaRecorder API ([currently only available in Chrome & Firefox](https://caniuse.com/#search=MediaRecorder)).
-
-## Demos
-
-Check out the simple [demo](https://aleksa000777.github.io/react-mic/) first.
+Works via the HTML5 MediaRecorder API ([MediaRecorder](https://caniuse.com/#search=MediaRecorder)).
 
 ## Installation
 
