@@ -1,0 +1,104 @@
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// cool blog article on how to do this: http://www.smartjava.org/content/exploring-html5-web-audio-visualizing-sound
+// https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Visualizations_with_Web_Audio_API
+
+// distortion curve for the waveshaper, thanks to Kevin Ennis
+// http://stackoverflow.com/questions/22312841/waveshaper-node-in-webaudio-how-to-emulate-distortion
+
+import React, { Component } from 'react';
+import { string, number, bool, func } from 'prop-types';
+import { MicrophoneRecorder } from '../libs/MicrophoneRecorder';
+import AudioContext from '../libs/AudioContext';
+import AudioPlayer from '../libs/AudioPlayer';
+
+var ReactMic = function (_Component) {
+  _inherits(ReactMic, _Component);
+
+  function ReactMic(props) {
+    _classCallCheck(this, ReactMic);
+
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props));
+
+    _this.state = {
+      microphoneRecorder: null
+    };
+    return _this;
+  }
+
+  ReactMic.prototype.componentDidMount = function componentDidMount() {
+    var _props = this.props,
+        onSave = _props.onSave,
+        onStop = _props.onStop,
+        onStart = _props.onStart,
+        onData = _props.onData,
+        audioElem = _props.audioElem,
+        audioBitsPerSecond = _props.audioBitsPerSecond,
+        mimeType = _props.mimeType;
+
+    var options = {
+      audioBitsPerSecond: audioBitsPerSecond,
+      mimeType: mimeType
+    };
+
+    if (audioElem) {
+      AudioPlayer.create(audioElem);
+    } else {
+      this.setState({
+        microphoneRecorder: new MicrophoneRecorder(onStart, onStop, onSave, onData, options)
+      });
+    }
+  };
+
+  ReactMic.prototype.render = function render() {
+    var _props2 = this.props,
+        record = _props2.record,
+        onStop = _props2.onStop,
+        width = _props2.width,
+        height = _props2.height,
+        children = _props2.children;
+    var microphoneRecorder = this.state.microphoneRecorder;
+
+
+    if (record) {
+      if (microphoneRecorder) {
+        microphoneRecorder.startRecording();
+      }
+    } else {
+      if (microphoneRecorder) {
+        microphoneRecorder.stopRecording(onStop);
+      }
+    }
+
+    return React.createElement(
+      React.Fragment,
+      null,
+      children
+    );
+  };
+
+  return ReactMic;
+}(Component);
+
+export { ReactMic as default };
+
+
+process.env.NODE_ENV !== "production" ? ReactMic.propTypes = {
+  className: string,
+  audioBitsPerSecond: number,
+  mimeType: string,
+  record: bool.isRequired,
+  onStop: func,
+  onData: func
+} : void 0;
+
+ReactMic.defaultProps = {
+  className: 'record',
+  audioBitsPerSecond: 128000,
+  mimeType: 'audio/webm;codecs=opus',
+  record: false
+};

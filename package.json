@@ -9,9 +9,7 @@
     "css",
     "es",
     "lib",
-    "umd",
-    "nwb.config.js",
-    "src"
+    "umd"
   ],
   "keywords": [
     "react",
@@ -27,8 +25,7 @@
     "test": "nwb test",
     "test:coverage": "nwb test --coverage",
     "test:watch": "nwb test --server",
-    "deploy": "nwb build-react-component && gh-pages -d demo/dist",
-    "postinstall": "nwb build"
+    "deploy": "nwb build-react-component && gh-pages -d demo/dist"
   },
   "peerDependencies": {
     "react": "16.x"
