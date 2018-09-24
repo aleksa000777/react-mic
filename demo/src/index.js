@@ -1,7 +1,7 @@
 import React, {Component}          from 'react';
 import { render }                  from 'react-dom';
 
-import { ReactMic, saveRecording } from '../../src';
+import { ReactMic } from '../../src';
 
 require ('./styles.scss');
 
