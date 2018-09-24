@@ -10,7 +10,8 @@
     "es",
     "lib",
     "umd",
-    "nwb.config.js"
+    "nwb.config.js",
+    "src"
   ],
   "keywords": [
     "react",
