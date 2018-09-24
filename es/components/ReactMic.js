@@ -10,11 +10,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // distortion curve for the waveshaper, thanks to Kevin Ennis
 // http://stackoverflow.com/questions/22312841/waveshaper-node-in-webaudio-how-to-emulate-distortion
 
-import React, { Component } from 'react';
-import { string, number, bool, func } from 'prop-types';
-import { MicrophoneRecorder } from '../libs/MicrophoneRecorder';
-import AudioContext from '../libs/AudioContext';
-import AudioPlayer from '../libs/AudioPlayer';
+import React, { Component } from "react";
+import MicrophoneRecorder from "../libs/MicrophoneRecorder";
+import AudioPlayer from "../libs/AudioPlayer";
 
 var ReactMic = function (_Component) {
   _inherits(ReactMic, _Component);
@@ -58,18 +56,14 @@ var ReactMic = function (_Component) {
     var _props2 = this.props,
         record = _props2.record,
         onStop = _props2.onStop,
-        width = _props2.width,
-        height = _props2.height,
         children = _props2.children;
     var microphoneRecorder = this.state.microphoneRecorder;
 
 
-    if (record) {
-      if (microphoneRecorder) {
+    if (microphoneRecorder) {
+      if (record) {
         microphoneRecorder.startRecording();
-      }
-    } else {
-      if (microphoneRecorder) {
+      } else {
         microphoneRecorder.stopRecording(onStop);
       }
     }
@@ -87,18 +81,9 @@ var ReactMic = function (_Component) {
 export { ReactMic as default };
 
 
-process.env.NODE_ENV !== "production" ? ReactMic.propTypes = {
-  className: string,
-  audioBitsPerSecond: number,
-  mimeType: string,
-  record: bool.isRequired,
-  onStop: func,
-  onData: func
-} : void 0;
-
 ReactMic.defaultProps = {
-  className: 'record',
+  className: "record",
   audioBitsPerSecond: 128000,
-  mimeType: 'audio/webm;codecs=opus',
+  mimeType: "audio/webm;codecs=opus",
   record: false
 };
