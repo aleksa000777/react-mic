@@ -54,7 +54,6 @@ export class Example extends React.Component {
       blobURL: null,
       isRecording: false
     }
-
   }
 
   startRecording = () => {
@@ -73,12 +72,20 @@ export class Example extends React.Component {
     console.log('chunk of data is: ', recordedBlob);
   }
 
+  onSave = blobObject => {
+    console.log("You can tap into the onSave callback", blobObject);
+  };
+
   onStop = blobObject => {
     console.log('blobObject is: ', blobObject);
     this.setState({
       blobURL: blobObject.blobURL
     });
   }
+
+  onStart = () => {
+    console.log('You can tap into the onStart callback');
+  };
 
   render() {
     const { isRecording } = this.state;
