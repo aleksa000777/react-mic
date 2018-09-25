@@ -28,27 +28,29 @@ export default class MicrophoneRecorder {
 
   startRecording = () => {
     startTime = Date.now();
-    chunks = [];
-    mediaRecorder = null;
 
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia(constraints).then(str => {
-        mediaRecorder = new MediaRecorder(str);
-        if (onStartCallback) {
-          onStartCallback();
-        }
-        mediaRecorder.addEventListener("dataavailable", e => {
-          chunks = e.data;
-          if (onDataCallback) {
-            onDataCallback(e.data);
-          }
-        });
-
-        mediaRecorder.start();
-        mediaRecorder.addEventListener("stop", this.onStop);
-      });
+    if(mediaRecorder) {
+      return;
     } else {
-      alert("Your browser does not support audio recording");
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices.getUserMedia(constraints).then(str => {
+          mediaRecorder = new MediaRecorder(str);
+          if (onStartCallback) {
+            onStartCallback();
+          }
+          mediaRecorder.addEventListener("dataavailable", e => {
+            chunks = e.data;
+            if (onDataCallback) {
+              onDataCallback(e.data);
+            }
+          });
+
+          mediaRecorder.start();
+          mediaRecorder.addEventListener("stop", this.onStop);
+        });
+      } else {
+        alert("Your browser does not support audio recording");
+      }
     }
   };
 
@@ -58,6 +60,7 @@ export default class MicrophoneRecorder {
       mediaRecorder.stream.getTracks()[0].stop();
       mediaRecorder.stream.getTracks().forEach(i => i.stop());
     }
+    mediaRecorder = null
   };
 
   onStop = () => {
@@ -68,6 +71,7 @@ export default class MicrophoneRecorder {
       options: mediaOptions,
       blobURL: window.URL.createObjectURL(chunks)
     };
+    chunks = []
 
     if (onStopCallback) {
       onStopCallback(blobObject);
