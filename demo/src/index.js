@@ -10,7 +10,8 @@ export default class Demo extends Component {
     super(props);
     this.state = {
       blobObject: null,
-      isRecording: false
+      isRecording: false,
+      active: false
     }
   }
 
@@ -22,7 +23,8 @@ export default class Demo extends Component {
 
   stopRecording= () => {
     this.setState({
-      isRecording: false
+      isRecording: false,
+      active: false
     });
   }
 
@@ -30,6 +32,9 @@ export default class Demo extends Component {
   }
 
   onStart = () => {
+    this.setState({
+      active: true
+    });
   }
 
   onStop = (blobObject) => {
@@ -45,7 +50,6 @@ export default class Demo extends Component {
 
   render() {
     const { isRecording } = this.state;
-
     return(
         <div>
           <h1>React-Mic</h1>
