@@ -22,27 +22,26 @@ var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, on
 
   this.startRecording = function () {
     startTime = Date.now();
-    chunks = [];
-    mediaRecorder = null;
-
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia(constraints).then(function (str) {
-        mediaRecorder = new MediaRecorder(str);
-        if (onStartCallback) {
-          onStartCallback();
-        }
-        mediaRecorder.addEventListener("dataavailable", function (e) {
-          chunks = e.data;
-          if (onDataCallback) {
-            onDataCallback(e.data);
+    if (!mediaRecorder) {
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices.getUserMedia(constraints).then(function (str) {
+          mediaRecorder = new MediaRecorder(str);
+          if (onStartCallback) {
+            onStartCallback();
           }
-        });
+          mediaRecorder.addEventListener("dataavailable", function (e) {
+            chunks = e.data;
+            if (onDataCallback) {
+              onDataCallback(e.data);
+            }
+          });
 
-        mediaRecorder.start();
-        mediaRecorder.addEventListener("stop", _this.onStop);
-      });
-    } else {
-      alert("Your browser does not support audio recording");
+          mediaRecorder.start();
+          mediaRecorder.addEventListener("stop", _this.onStop);
+        });
+      } else {
+        alert("Your browser does not support audio recording");
+      }
     }
   };
 
@@ -54,6 +53,7 @@ var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, on
         return i.stop();
       });
     }
+    mediaRecorder = null;
   };
 
   this.onStop = function () {
@@ -64,6 +64,7 @@ var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, on
       options: mediaOptions,
       blobURL: window.URL.createObjectURL(chunks)
     };
+    chunks = [];
 
     if (onStopCallback) {
       onStopCallback(blobObject);
