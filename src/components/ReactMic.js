@@ -17,6 +17,7 @@ export default class ReactMic extends Component {
   }
 
   componentDidMount() {
+    if(!AudioPlayer) return
     const { onSave, onStop, onStart, onData, audioElem, audioBitsPerSecond, mimeType } = this.props;
     const options = {
       audioBitsPerSecond,

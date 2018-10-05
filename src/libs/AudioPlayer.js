@@ -5,6 +5,7 @@ let audioSource;
 const AudioPlayer =  {
   create(audioElem) {
     const audioCtx = AudioContext.getAudioContext();
+    if (!audioCtx) return false
     const analyser = AudioContext.getAnalyser();
 
     if(audioSource === undefined){
