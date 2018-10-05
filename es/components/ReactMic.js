@@ -29,6 +29,7 @@ var ReactMic = function (_Component) {
   }
 
   ReactMic.prototype.componentDidMount = function componentDidMount() {
+    if (!AudioPlayer) return;
     var _props = this.props,
         onSave = _props.onSave,
         onStop = _props.onStop,

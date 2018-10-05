@@ -471,6 +471,7 @@ var ReactMic = function (_Component) {
   }
 
   ReactMic.prototype.componentDidMount = function componentDidMount() {
+    if (!__WEBPACK_IMPORTED_MODULE_2__libs_AudioPlayer__["a" /* default */]) return;
     var _props = this.props,
         onSave = _props.onSave,
         onStop = _props.onStop,
@@ -515,7 +516,7 @@ var ReactMic = function (_Component) {
       {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 47
+          lineNumber: 48
         },
         __self: this
       },
@@ -541,8 +542,10 @@ ReactMic.defaultProps = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var analyser = audioCtx.createAnalyser();
+var audioCtx = checkBrowserSupport;
+if (audioCtx) {
+  var _analyser = audioCtx.createAnalyser();
+}
 
 var AudioContext = {
   getAudioContext: function getAudioContext() {
@@ -550,6 +553,18 @@ var AudioContext = {
   },
   getAnalyser: function getAnalyser() {
     return analyser;
+  }
+};
+
+var checkBrowserSupport = function checkBrowserSupport() {
+  if (typeof AudioContext !== "undefined") {
+    return new window.AudioContext();
+  } else if (typeof webkitAudioContext !== "undefined") {
+    return new window.webkitAudioContext();
+  } else if (typeof mozAudioContext !== "undefined") {
+    return new window.mozAudioContext();
+  } else {
+    return false;
   }
 };
 
@@ -568,6 +583,7 @@ var audioSource = void 0;
 var AudioPlayer = {
   create: function create(audioElem) {
     var audioCtx = __WEBPACK_IMPORTED_MODULE_0__AudioContext__["a" /* default */].getAudioContext();
+    if (!audioCtx) return false;
     var analyser = __WEBPACK_IMPORTED_MODULE_0__AudioContext__["a" /* default */].getAnalyser();
 
     if (audioSource === undefined) {
