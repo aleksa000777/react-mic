@@ -48,7 +48,7 @@ export default class MicrophoneRecorder {
             mediaRecorder.start();
             mediaRecorder.addEventListener("stop", this.onStop);
           })
-          .catch(function(err) { console.log(err.name + ": " + err.message); });
+          .catch((err) => console.log(err.name + ": " + err.message));
       } else {
         alert("Your browser does not support audio recording");
       }
