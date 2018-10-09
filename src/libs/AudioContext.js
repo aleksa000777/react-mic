@@ -1,24 +1,36 @@
 let audioCtx = null
-let analiser = null
+let analyser = null
+let AudioExists = false
 
-const checkBrowserSupport = () =>
+const waitForAudio = (timeout = 5000) =>
   new Promise((resolve, reject) => {
-    if (typeof AudioContext !== "undefined") {
-      resolve(new window.AudioContext());
-     } else if (typeof webkitAudioContext !== "undefined") {
-      resolve(new window.webkitAudioContext())
-     } else if (typeof mozAudioContext !== "undefined") {
-      resolve(new window.mozAudioContext())
-     } else {
-      resolve(false)
+    const check = () => {
+      if (typeof AudioContext !== "undefined") {
+        AudioExists = true
+        audioCtx = new window.AudioContext();
+       } else if (typeof webkitAudioContext !== "undefined") {
+         AudioExists = true
+
+        audioCtx = new window.webkitAudioContext()
+       } else if (typeof mozAudioContext !== "undefined") {
+         AudioExists = true
+         audioCtx = new window.mozAudioContext()
+       }
+      if (AudioExists) {
+        window.cancelAnimationFrame(check)
+        resolve(audioCtx)
+      }
     }
+
+    window.setTimeout(() => {
+      cancelAnimationFrame(check)
+      reject(new Error("Took to long to load"))
+    }, timeout)
+    requestAnimationFrame(check)
   })
 
-console.log('here', typeof AudioContext !== "undefined");
-
-checkBrowserSupport()
+waitForAudio()
   .then(res => {
-    console.log('aaaaa', res);
     audioCtx = res
     if (audioCtx) {
       analyser = audioCtx.createAnalyser();

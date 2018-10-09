@@ -32,21 +32,23 @@ export default class MicrophoneRecorder {
     startTime = Date.now();
     if(!mediaRecorder) {
       if (navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia(constraints).then(str => {
-          mediaRecorder = new MediaRecorder(str);
-          if (onStartCallback) {
-            onStartCallback();
-          }
-          mediaRecorder.addEventListener("dataavailable", e => {
-            chunks = e.data;
-            if (onDataCallback) {
-              onDataCallback(e.data);
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then(str => {
+            mediaRecorder = new MediaRecorder(str);
+            if (onStartCallback) {
+              onStartCallback();
             }
-          });
+            mediaRecorder.addEventListener("dataavailable", e => {
+              chunks = e.data;
+              if (onDataCallback) {
+                onDataCallback(e.data);
+              }
+            });
 
-          mediaRecorder.start();
-          mediaRecorder.addEventListener("stop", this.onStop);
-        });
+            mediaRecorder.start();
+            mediaRecorder.addEventListener("stop", this.onStop);
+          })
+          .catch(function(err) { console.log(err.name + ": " + err.message); });
       } else {
         alert("Your browser does not support audio recording");
       }
