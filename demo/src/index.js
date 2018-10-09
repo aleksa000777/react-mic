@@ -29,6 +29,7 @@ export default class Demo extends Component {
   }
 
   onSave = (blobObject) => {
+    console.log('onSave: ', blobObject);
   }
 
   onStart = () => {

@@ -1,4 +1,6 @@
 import MediaRecorder from "audio-recorder-polyfill";
+import ConvertToMP3 from "./lamemp3";
+
 
 let mediaRecorder;
 let chunks = [];
@@ -58,23 +60,32 @@ export default class MicrophoneRecorder {
       mediaRecorder.stream.getTracks().forEach(i => i.stop());
     }
     mediaRecorder = null
-  };
+  };    
 
   onStop = () => {
-    const blobObject = {
-      blob: chunks,
-      startTime,
-      stopTime: window.Date.now(),
-      options: mediaOptions,
-      blobURL: window.URL.createObjectURL(chunks)
-    };
-    chunks = []
+    let blobObject
+    const blobWavUrl = window.URL.createObjectURL(chunks)
 
-    if (onStopCallback) {
-      onStopCallback(blobObject);
-    }
-    if (onSaveCallback) {
-      onSaveCallback(blobObject);
-    }
+    ConvertToMP3(blobWavUrl)
+      .then(function (blobObj) {
+        blobObject = {
+          blob: blobObj.blob,
+          startTime,
+          stopTime: window.Date.now(),
+          options: mediaOptions,
+          blobURL: blobObj.blobURL
+        }
+        chunks = []
+        
+        if (onStopCallback) {
+          onStopCallback(blobObject);
+        }
+        if (onSaveCallback) {
+          onSaveCallback(blobObject);
+        }
+      })
+      .catch(function (err) {
+        console.error('Augh, there was an error!', err.statusText);
+      }); 
   };
 }
