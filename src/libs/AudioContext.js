@@ -1,28 +1,50 @@
-const audioCtx = checkBrowserSupport;
-if (audioCtx) {
-  const analyser = audioCtx.createAnalyser();
-}
+let audioCtx = null
+let analyser = null
+let AudioExists = false
 
-const AudioContext  = {
-  getAudioContext() {
-    return audioCtx;
+const waitForAudio = (timeout = 5000) =>
+  new Promise((resolve, reject) => {
+    const check = () => {
+      if (typeof AudioContext !== 'undefined') {
+        AudioExists = true
+        audioCtx = new window.AudioContext()
+      } else if (typeof webkitAudioContext !== 'undefined') {
+        AudioExists = true
+
+        audioCtx = new window.webkitAudioContext()
+      } else if (typeof mozAudioContext !== 'undefined') {
+        AudioExists = true
+        audioCtx = new window.mozAudioContext()
+      }
+      if (AudioExists) {
+        window.cancelAnimationFrame(check)
+        resolve(audioCtx)
+      }
+    }
+
+    window.setTimeout(() => {
+      cancelAnimationFrame(check)
+      reject(new Error('Took to long to load'))
+    }, timeout)
+    requestAnimationFrame(check)
+  })
+
+waitForAudio()
+  .then(res => {
+    audioCtx = res
+    if (audioCtx) {
+      analyser = audioCtx.createAnalyser()
+    }
+  })
+
+const AudioContext = {
+  getAudioContext () {
+    return audioCtx
   },
 
-  getAnalyser() {
-    return analyser;
+  getAnalyser () {
+    return analyser
   }
 }
 
-const checkBrowserSupport = () => {
-  if (typeof AudioContext !== "undefined") {
-    return new window.AudioContext();
-   } else if (typeof webkitAudioContext !== "undefined") {
-    return new window.webkitAudioContext();
-   } else if (typeof mozAudioContext !== "undefined") {
-    return new window.mozAudioContext();
-   } else {
-    return false
-  }
-}
-
-export default AudioContext;
+export default AudioContext

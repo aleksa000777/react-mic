@@ -41,6 +41,7 @@
   "license": "MIT",
   "repository": "https://github.com/aleksa000777/react-mic",
   "dependencies": {
-    "audio-recorder-polyfill": "^0.1.2"
+    "audio-recorder-polyfill": "^0.1.2",
+    "lamejs": "^1.2.0"
   }
 }

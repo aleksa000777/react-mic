@@ -1,4 +1,6 @@
 import MediaRecorder from "audio-recorder-polyfill";
+import ConvertToMP3 from "./lamemp3";
+
 
 let mediaRecorder;
 let chunks = [];
@@ -30,21 +32,23 @@ export default class MicrophoneRecorder {
     startTime = Date.now();
     if(!mediaRecorder) {
       if (navigator.mediaDevices) {
-        navigator.mediaDevices.getUserMedia(constraints).then(str => {
-          mediaRecorder = new MediaRecorder(str);
-          if (onStartCallback) {
-            onStartCallback();
-          }
-          mediaRecorder.addEventListener("dataavailable", e => {
-            chunks = e.data;
-            if (onDataCallback) {
-              onDataCallback(e.data);
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then(str => {
+            mediaRecorder = new MediaRecorder(str);
+            if (onStartCallback) {
+              onStartCallback();
             }
-          });
+            mediaRecorder.addEventListener("dataavailable", e => {
+              chunks = e.data;
+              if (onDataCallback) {
+                onDataCallback(e.data);
+              }
+            });
 
-          mediaRecorder.start();
-          mediaRecorder.addEventListener("stop", this.onStop);
-        });
+            mediaRecorder.start();
+            mediaRecorder.addEventListener("stop", this.onStop);
+          })
+          .catch((err) => console.log(err.name + ": " + err.message));
       } else {
         alert("Your browser does not support audio recording");
       }
@@ -58,23 +62,32 @@ export default class MicrophoneRecorder {
       mediaRecorder.stream.getTracks().forEach(i => i.stop());
     }
     mediaRecorder = null
-  };
+  };    
 
   onStop = () => {
-    const blobObject = {
-      blob: chunks,
-      startTime,
-      stopTime: window.Date.now(),
-      options: mediaOptions,
-      blobURL: window.URL.createObjectURL(chunks)
-    };
-    chunks = []
+    let blobObject
+    const blobWavUrl = window.URL.createObjectURL(chunks)
 
-    if (onStopCallback) {
-      onStopCallback(blobObject);
-    }
-    if (onSaveCallback) {
-      onSaveCallback(blobObject);
-    }
+    ConvertToMP3(blobWavUrl)
+      .then(function (blobObj) {
+        blobObject = {
+          blob: blobObj.blob,
+          startTime,
+          stopTime: window.Date.now(),
+          options: mediaOptions,
+          blobURL: blobObj.blobURL
+        }
+        chunks = []
+        
+        if (onStopCallback) {
+          onStopCallback(blobObject);
+        }
+        if (onSaveCallback) {
+          onSaveCallback(blobObject);
+        }
+      })
+      .catch(function (err) {
+        console.error('Augh, there was an error!', err.statusText);
+      }); 
   };
 }
