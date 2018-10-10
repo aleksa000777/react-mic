@@ -16,12 +16,15 @@ export default class Demo extends Component {
   }
 
   startRecording= () => {
+    console.log("startRecording");
     this.setState({
       isRecording: true
     });
   }
 
   stopRecording= () => {
+    console.log("stopRecording");
+
     this.setState({
       isRecording: false,
       active: false
@@ -33,12 +36,16 @@ export default class Demo extends Component {
   }
 
   onStart = () => {
+    console.log("onStart");
+
     this.setState({
       active: true
     });
   }
 
   onStop = (blobObject) => {
+    console.log("onStop");
+
     this.setState({
       blobURL : blobObject.blobURL
     });
