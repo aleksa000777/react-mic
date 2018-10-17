@@ -15,7 +15,8 @@ navigator.getUserMedia =
   navigator.getUserMedia ||
   navigator.webkitGetUserMedia ||
   navigator.mozGetUserMedia ||
-  navigator.msGetUserMedia;
+  navigator.msGetUserMedia ||
+  navigator.mediaDevices.getUserMedia;
 
 export default class MicrophoneRecorder {
   constructor(onStart, onStop, onSave, onData, options) {
@@ -29,7 +30,8 @@ export default class MicrophoneRecorder {
   startRecording = () => {
     startTime = Date.now();
     if(!mediaRecorder) {
-      if (navigator.mediaDevices) {
+      // if (navigator.mediaDevices) {
+      if (navigator.mediaDevices){
         navigator.mediaDevices.getUserMedia(constraints).then(str => {
           mediaRecorder = new MediaRecorder(str);
           if (onStartCallback) {
