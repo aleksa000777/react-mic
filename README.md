@@ -1,30 +1,17 @@
 # react-mic
+[Original](https://github.com/hackingbeauty/react-mic)
 
-Record a user's voice and display as an osscilation.  Audio is saved as [WebM](https://en.wikipedia.org/wiki/WebM) audio file format.
-
-**PLEASE NOTE**: The WebM audio format is not supported in Safari browsers (including Safari on iOS).  You need to save an audio recording as a WAV file  in order to get full cross-browser and cross-device support.
-
-If you're a business and you need a version of this React component with added WAV support so you can record and play back audio recordings in *any* browser and mobile device, please email Mark at mark.muskardin@gmail.com. Put "I NEED REACT-MIC WITH WAV SUPPORT" in the subject headline.
-
-Featured in the course ["How To Develop A Professional React App"](http://www.professionalreactapp.com).
-
-Works via the HTML5 MediaRecorder API ([currently only available in Chrome & Firefox](https://caniuse.com/#search=MediaRecorder)).
-
-## Demos
-
-Check out the simple [demo](https://hackingbeauty.github.io/react-mic/) first.
-
-Check out the component in action within a professional Web app [here](https://www.voicerecordpro.com/#/record).
+Works via the HTML5 MediaRecorder API ([MediaRecorder](https://caniuse.com/#search=MediaRecorder)).
 
 ## Installation
 
-`npm install --save react-mic`
+`npm install --save react-mic` //TODO
 
 ## Features
 
 - Record audio from microphone
-- Display sound wave as voice is being recorded
 - Save audio as BLOB
+- saved as type `audio/wav`
 
 ## Usage
 
@@ -35,58 +22,100 @@ Check out the component in action within a professional Web app [here](https://w
   className={string}       // provide css class name
   onStop={function}        // callback to execute when audio stops recording
   onData={function}        // callback to execute when chunk of audio data is available
-  strokeColor={string}     // sound wave color
-  backgroundColor={string} // background color
-/>
+  >       
+  <audio
+    ref={c => {
+      this.audioSource = c;
+    }}
+    controls="controls"
+    src={string}
+  >
+    <track kind="captions" />
+  </audio>
+  <button onClick={boolean} type="button">
+    Start
+  </button>
+  <button onClick={boolean} type="button">
+    Stop
+  </button>
+<ReactMic/>
 
 ```
 
 ## Example
 
 ```js
-import { ReactMic } from 'react-mic';
+import ReactMic from 'react-mic';
 
 export class Example extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      record: false
+      blobURL: null,
+      isRecording: false
     }
-
   }
 
   startRecording = () => {
     this.setState({
-      record: true
+      isRecording: true
     });
   }
 
   stopRecording = () => {
     this.setState({
-      record: false
+      isRecording: false
     });
   }
 
-  onData(recordedBlob) {
-    console.log('chunk of real-time data is: ', recordedBlob);
+  onData = recordedBlob => {
+    console.log('chunk of data is: ', recordedBlob);
   }
 
-  onStop(recordedBlob) {
-    console.log('recordedBlob is: ', recordedBlob);
+  onSave = blobObject => {
+    console.log("You can tap into the onSave callback", blobObject);
+  };
+
+  onStop = blobObject => {
+    console.log('blobObject is: ', blobObject);
+    this.setState({
+      blobURL: blobObject.blobURL
+    });
   }
+
+  onStart = () => {
+    console.log('You can tap into the onStart callback');
+  };
 
   render() {
+    const { isRecording } = this.state;
     return (
-      <div>
+      <div className="record-mic">
         <ReactMic
-          record={this.state.record}
-          className="sound-wave"
+          record={isRecording}
           onStop={this.onStop}
+          onStart={this.onStart}
+          onSave={this.onSave}
           onData={this.onData}
-          strokeColor="#000000"
-          backgroundColor="#FF4081" />
-        <button onTouchTap={this.startRecording} type="button">Start</button>
-        <button onTouchTap={this.stopRecording} type="button">Stop</button>
+        >
+          <div>
+            <audio
+              ref={c => {
+                this.audioSource = c;
+              }}
+              controls="controls"
+              src={this.state.blobURL}
+            >
+              <track kind="captions" />
+            </audio>
+          </div>
+          <button onClick={this.startRecording} type="button">
+            Start
+          </button>
+          <button onClick={this.stopRecording} type="button">
+            Stop
+          </button>
+        </ReactMic>
       </div>
     );
   }
