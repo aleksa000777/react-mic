@@ -15,8 +15,7 @@ navigator.getUserMedia =
   navigator.getUserMedia ||
   navigator.webkitGetUserMedia ||
   navigator.mozGetUserMedia ||
-  navigator.msGetUserMedia ||
-  navigator.mediaDevices.getUserMedia;
+  navigator.msGetUserMedia;
 
 export default class MicrophoneRecorder {
   constructor(onStart, onStop, onSave, onData, options) {
