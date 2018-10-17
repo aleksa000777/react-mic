@@ -30,8 +30,7 @@ export default class MicrophoneRecorder {
   startRecording = () => {
     startTime = Date.now();
     if(!mediaRecorder) {
-      // if (navigator.mediaDevices) {
-      if (navigator.mediaDevices){
+      if (navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia(constraints).then(str => {
           mediaRecorder = new MediaRecorder(str);
           if (onStartCallback) {

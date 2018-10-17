@@ -631,7 +631,6 @@ var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, on
   this.startRecording = function () {
     startTime = Date.now();
     if (!mediaRecorder) {
-      // if (navigator.mediaDevices) {
       if (navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia(constraints).then(function (str) {
           mediaRecorder = new __WEBPACK_IMPORTED_MODULE_0_audio_recorder_polyfill___default.a(str);
