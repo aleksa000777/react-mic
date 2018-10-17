@@ -13,7 +13,7 @@ var onDataCallback = void 0;
 
 var constraints = { audio: true };
 
-navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.mediaDevices.getUserMedia;
 
 var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, onData, options) {
   var _this = this;
@@ -23,6 +23,7 @@ var MicrophoneRecorder = function MicrophoneRecorder(onStart, onStop, onSave, on
   this.startRecording = function () {
     startTime = Date.now();
     if (!mediaRecorder) {
+      // if (navigator.mediaDevices) {
       if (navigator.mediaDevices) {
         navigator.mediaDevices.getUserMedia(constraints).then(function (str) {
           mediaRecorder = new MediaRecorder(str);
